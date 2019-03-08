@@ -1,4 +1,12 @@
-﻿$HEADER$namespace $NAMESPACE$
+﻿using System;
+
+namespace WorkSupply.Core.Exceptions
 {
-  public class $CLASS$ {$END$}
+    public class EntityNotFoundException : Exception
+    {
+        public EntityNotFoundException(string message) : base(message)
+        {
+            
+        }
+    }
 }

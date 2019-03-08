@@ -1,4 +1,9 @@
-﻿$HEADER$namespace $NAMESPACE$
+﻿namespace WorkSupply.Core.DTOs.Auth
 {
-  public class $CLASS$ {$END$}
+    public class UserDto
+    {
+        public string Id { get; set; }
+
+        public string Email { get; set; }
+    }
 }

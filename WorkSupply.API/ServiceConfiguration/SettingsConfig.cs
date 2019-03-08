@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WorkSupply.API.AppSettings;
+using WorkSupply.Core.Models.Settings;
 
-namespace WorkSupply.API.Middleware
+namespace WorkSupply.API.ServiceConfiguration
 {
     public static class SettingsConfig
     {

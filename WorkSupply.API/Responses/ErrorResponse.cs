@@ -1,4 +1,9 @@
-﻿$HEADER$namespace $NAMESPACE$
+﻿namespace WorkSupply.API.Responses
 {
-  public class $CLASS$ {$END$}
+    public class ErrorResponse
+    {
+        public ErrorCodes Code { get; set; }
+
+        public string Reason { get; set; }
+    }
 }

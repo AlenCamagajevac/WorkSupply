@@ -1,4 +1,9 @@
-﻿$HEADER$namespace $NAMESPACE$
+﻿namespace WorkSupply.API.Responses
 {
-  public enum $ENUM$ {$END$}
+    public enum ErrorCodes
+    {
+        CouldNotCreateUser = 10,
+        CouldNotAddUserToRole = 11,
+        CouldNotLogInUser = 12
+    }
 }

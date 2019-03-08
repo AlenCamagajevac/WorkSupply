@@ -1,4 +1,12 @@
-﻿$HEADER$namespace $NAMESPACE$
+﻿using System;
+
+namespace WorkSupply.Core.Exceptions
 {
-  public class $CLASS$ {$END$}
+    public class CouldNotLogInUserException : Exception
+    {
+        public CouldNotLogInUserException(string message) : base(message)
+        {
+            
+        }
+    }
 }

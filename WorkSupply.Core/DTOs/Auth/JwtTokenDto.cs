@@ -1,9 +1,11 @@
-﻿namespace WorkSupply.Core.DTOs.Auth
+﻿using System;
+
+namespace WorkSupply.Core.DTOs.Auth
 {
-    public class JwtToken
+    public class JwtTokenDto
     {
         public string Token { get; set; }
 
-        public string Expiration { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

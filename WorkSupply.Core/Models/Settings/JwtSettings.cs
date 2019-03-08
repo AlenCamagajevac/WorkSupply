@@ -1,4 +1,4 @@
-﻿namespace WorkSupply.API.AppSettings
+﻿namespace WorkSupply.Core.Models.Settings
 {
     public class JwtSettings
     {
