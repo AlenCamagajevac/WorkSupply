@@ -3,7 +3,10 @@
     public enum ErrorCodes
     {
         CouldNotCreateUser = 10,
-        CouldNotAddUserToRole = 11,
-        CouldNotLogInUser = 12
+        CouldNotLogInUser = 11,
+        
+        CouldNotCreateWorkLog = 21,
+        CouldNotResolveWorkLog = 22,
+        CouldNotGetWorkLog = 23
     }
 }

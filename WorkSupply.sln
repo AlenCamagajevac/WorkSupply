@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkSupply.API", "WorkSuppl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkSupply.Core", "WorkSupply.Core\WorkSupply.Core.csproj", "{E1B2DDF2-2F5D-4281-B061-900F7E0CCF1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkSupply.Persistance.SQL", "WorkSupply.Persistance.SQL\WorkSupply.Persistance.SQL.csproj", "{9D8FA211-4FA7-4EDE-AAF0-A5327074E42F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkSupply.Persistence.SQL", "WorkSupply.Persistence.SQL\WorkSupply.Persistence.SQL.csproj", "{9D8FA211-4FA7-4EDE-AAF0-A5327074E42F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkSupply.Services", "WorkSupply.Services\WorkSupply.Services.csproj", "{35353543-61FC-410C-B304-3F8EAA528A36}"
 EndProject

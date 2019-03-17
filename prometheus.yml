@@ -1,0 +1,10 @@
+# prometheus.yml
+global:
+  scrape_interval: 5s
+  external_labels:
+    monitor: 'work-supply-monitor'
+scrape_configs:
+  - job_name: 'worksupply-node'
+    metrics_path: /metrics-text
+    static_configs:
+      - targets: ['worksupply:5000']

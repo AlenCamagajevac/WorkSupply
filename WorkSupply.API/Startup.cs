@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using WorkSupply.API.Middleware;
 using WorkSupply.API.ServiceConfiguration;
-using WorkSupply.Persistance.SQL.Data;
+using WorkSupply.Persistence.SQL.Data;
 
 namespace WorkSupply.API
 {
@@ -33,22 +27,23 @@ namespace WorkSupply.API
             //Add DBContext
             services.AddDbContext<WorkSupplyContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
-                    sqlOptions.MigrationsAssembly("WorkSupply.Persistance.SQL")));
+                    {
+                        sqlOptions.MigrationsAssembly("WorkSupply.Persistence.SQL");
+                    }));
 
+            
             services.AddOAuth(Configuration);
-
-            services.AddSettings(Configuration);
-            
+            services.AddAuthPolicies();
+            services.AddSettings(Configuration);      
             services.AddAutoMapper();
-
-            // Register dependency injection
-            services.AddServices();
-
+            services.RegisterServices();
             services.AddSwaggerDocs(Configuration);
-            
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddMetrics();
+            services.AddCorsRules();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options => {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +64,13 @@ namespace WorkSupply.API
             }
             else
             {
+                var context = app.ApplicationServices.GetService<WorkSupplyContext>();
+                context.Database.Migrate();
+                
                 app.UseHsts();
             }
+
+            app.UseCors("AnyOrigin");
             
             app.UseMiddleware<LoggingMiddleware>();
 

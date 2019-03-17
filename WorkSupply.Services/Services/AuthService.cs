@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using WorkSupply.Core.DTOs.Auth;
 using WorkSupply.Core.Exceptions;
 using WorkSupply.Core.Models.AppUser;
 using WorkSupply.Core.Models.Settings;
@@ -39,37 +38,26 @@ namespace WorkSupply.Services.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<bool> CreateUserAsync(ApplicationUser user, string password)
+        public async Task<bool> CreateUserAsync(ApplicationUser user, string password, Role role)
         {
-            var createResult = await _userManager.CreateAsync(user, password);
-            if (createResult.Succeeded) return true;
-            Log.Information($"Could not create user: {createResult.Errors.ToList()}");
-            return false;
-        }
-
-        public async Task<bool> AssignUserToRoleAsync(string userId, string roleId)
-        {   
-            var role = await _roleManager.FindByIdAsync(roleId);
-            if (role == null)
+            // Find role
+            var appRole = await _roleManager.FindByNameAsync(ApplicationRole.GetRoleName(role));
+            if (appRole == null)
             {
-                Log.Warning($"Trying to add user: {userId} into non-existing role: {roleId}");
+                Log.Warning("Trying to add user: {user} into non-existing role: {role}", user, role);
                 throw new EntityNotFoundException($"Role does not exist");
             }
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+         
+            // Create user
+            var createResult = await _userManager.CreateAsync(user, password);
+            if (!createResult.Succeeded)
             {
-                Log.Warning($"Trying to add non-existing user: {userId} into role: {roleId}");
-                throw new EntityNotFoundException($"User does not exist");
+                Log.Information("Could not create user: {createResult.Errors.ToList()}", createResult.Errors.ToList());
+                return false;
             }
-
-            if ((await _userManager.GetRolesAsync(user)).Count > 0)
-            {
-                Log.Warning($"Trying to add user: {userId} with assigned role into another role: {roleId}");
-                throw new UserAlreadyInRoleException("User already has assigned role");
-            }
-
-            var addToRoleResult = await _userManager.AddToRoleAsync(user, await _roleManager.GetRoleNameAsync(role));
+            
+            // Assign user to role
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, appRole.Name);
             return addToRoleResult.Succeeded;
         }
 
@@ -96,8 +84,13 @@ namespace WorkSupply.Services.Services
         private async Task<List<Claim>> ConstructUserClaimsAsync(string email, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
-            if (!result.Succeeded) 
+            if (!result.Succeeded)
+            {
+                Log.Information("There was unsuccessful login attempt with email: {email} and password: {password}",
+                    email, password);
                 throw new CouldNotLogInUserException("Could not sign in user");
+            }
+
             var user = await _userManager.FindByEmailAsync(email);
             var userRoles = await _userManager.GetRolesAsync(user);
 

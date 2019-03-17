@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WorkSupply.Core.Models.AppUser;
 
 namespace WorkSupply.Core.DTOs.Auth
 {
@@ -9,5 +11,8 @@ namespace WorkSupply.Core.DTOs.Auth
 
         [MaxLength(20), MinLength(3)]
         public string Password { get; set; }
+
+        [Required]
+        public Role Role { get; set; }
     }
 }

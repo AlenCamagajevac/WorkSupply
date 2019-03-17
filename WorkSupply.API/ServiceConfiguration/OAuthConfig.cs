@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WorkSupply.Core.Models.AppUser;
-using WorkSupply.Persistance.SQL.Data;
+using WorkSupply.Persistence.SQL.Data;
 
-namespace WorkSupply.API.Middleware
+namespace WorkSupply.API.ServiceConfiguration
 {
     public static class OAuthConfig
     {
