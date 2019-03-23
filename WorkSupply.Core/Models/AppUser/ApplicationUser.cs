@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using ProtoBuf.ServiceModel;
 
 namespace WorkSupply.Core.Models.AppUser
 {
@@ -13,5 +14,7 @@ namespace WorkSupply.Core.Models.AppUser
 
         [MaxLength(350), MinLength(3)]
         public string City { get; set; }
+
+        public string EmailConfirmationCode { get; set; }
     }
 }

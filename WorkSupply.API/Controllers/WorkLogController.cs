@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -78,6 +79,25 @@ namespace WorkSupply.API.Controllers
             var workLogs = await _workLogService.GetWorkLogs(filters, userId);
 
             return Ok(_mapper.Map<PaginatedList<WorkLog>, PaginatedListDto<WorkLogDto>>(workLogs));
+        }
+        
+        /// <summary>
+        /// Get work logs to display on a chart
+        /// </summary>
+        /// <param name="filters">list of filters passed as query params</param>
+        /// <returns></returns>
+        [HttpGet("GraphData")]
+        [Authorize]
+        [ValidateModelAttributes]
+        [ProducesResponseType(typeof(PaginatedListDto<WorkLogDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetWorkLogGraphData(WorkLogGraphDataQuery filters)
+        {
+            var userId = User.FindFirst(ClaimTypes.Sid).Value;
+
+            var graphData = await _workLogService.GetWorkLogGraphData(filters, userId);
+
+            return Ok(_mapper.Map<List<WorkLogGraphData>, List<WorkLogGraphDataDto>>(graphData));
         }
 
         /// <summary>

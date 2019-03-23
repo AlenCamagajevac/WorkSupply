@@ -7,13 +7,14 @@ namespace WorkSupply.Core.Service
     public interface IAuthService
     {
         /// <summary>
-        /// Creates a user
+        /// Creates a user and sends a conformation mail
+        /// User will get link where he can activate his account(code) and using that link(code)
+        /// he can change his password 
         /// </summary>
         /// <param name="user">User info</param>
-        /// <param name="password">User password</param>
         /// <param name="role">Role in witch user will be added</param>
         /// <returns></returns>
-        Task<bool> CreateUserAsync(ApplicationUser user, string password, Role role);
+        Task<bool> CreateUserAsync(ApplicationUser user, Role role);
 
         /// <summary>
         /// Creates Jwt token witch user can use to authenticate requests
@@ -22,5 +23,15 @@ namespace WorkSupply.Core.Service
         /// <param name="password"></param>
         /// <returns></returns>
         Task<Jwt> CreateJwtToken(string email, string password);
+
+        /// <summary>
+        /// Given the emailConfirmation code change user password and set email active to true
+        /// Once completed, user can use new password to log in
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="emailConfirmationCode"></param>
+        /// <returns></returns>
+        Task<bool> ChangeUserPassword(string userId, string newPassword, string emailConfirmationCode);
     }
 }

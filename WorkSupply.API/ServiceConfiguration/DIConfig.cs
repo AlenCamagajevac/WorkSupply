@@ -13,6 +13,7 @@ namespace WorkSupply.API.ServiceConfiguration
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IWorkLogService, WorkLogService>();
             
             return services;

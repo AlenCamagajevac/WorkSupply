@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkSupply.Core.Models.AppUser;
+using WorkSupply.Core.Models.Employments;
 using WorkSupply.Core.Models.WorkLog;
 using WorkSupply.Persistence.SQL.Configuration.SeedData;
 
@@ -9,6 +10,7 @@ namespace WorkSupply.Persistence.SQL.Data
     public class WorkSupplyContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public virtual DbSet<WorkLog> WorkLogs { get; set; }
+        public virtual DbSet<Employment> Employments { get; set; }
         
         public WorkSupplyContext(DbContextOptions options) : base(options)
         {

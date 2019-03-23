@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkSupply.Persistence.SQL.Data;
 
@@ -137,7 +138,7 @@ namespace WorkSupply.Persistence.SQL.Migrations
                         new
                         {
                             Id = "0",
-                            ConcurrencyStamp = "bb5a8955-6f2a-40b0-b5b6-5de1f0c62d6a",
+                            ConcurrencyStamp = "69d6c4c8-42a4-42b4-9ed4-1eb15f360b55",
                             Description = "Admin of WorkSupply app",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
@@ -145,14 +146,14 @@ namespace WorkSupply.Persistence.SQL.Migrations
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "b5a40180-78e0-4a9d-897f-0252c23dd534",
+                            ConcurrencyStamp = "fe9269bf-a485-4a47-9b34-81a39ced54b6",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "225dd59b-a3d9-41b9-9560-5234579672b1",
+                            ConcurrencyStamp = "f4af7dce-213d-459e-a4b1-dac9e31416f8",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -176,6 +177,8 @@ namespace WorkSupply.Persistence.SQL.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
+
+                    b.Property<string>("EmailConfirmationCode");
 
                     b.Property<bool>("EmailConfirmed");
 
@@ -221,18 +224,52 @@ namespace WorkSupply.Persistence.SQL.Migrations
                         {
                             Id = "0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "af9668b7-2f25-4a7f-8732-d94756076d8c",
+                            ConcurrencyStamp = "adbcb37c-3863-40b2-bda5-240ae938fbed",
                             Email = "admin@worksupply.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@WORKSUPPLY.COM",
                             NormalizedUserName = "ADMIN@WORKSUPPLY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAF+9pjRPF5phCK/wYW5LfxFE4gHcvkbKHlZ53Rvg/r4fQLJtLJ6LGE3WMkMgH+rkQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEwl+mOZna0cFJaxQjcAwyJO5jbnOurUHhEwCvRNRIlQyP+lZHLsrx/WdpjpIw7Crg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "admin@worksupply.com"
                         });
+                });
+
+            modelBuilder.Entity("WorkSupply.Core.Models.Employments.Employment", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<DateTime>("DateOfEmployment");
+
+                    b.Property<string>("EmployeeId");
+
+                    b.Property<string>("EmployerId");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<DateTime?>("ModifiedDate");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("EmployerId");
+
+                    b.ToTable("Employments");
                 });
 
             modelBuilder.Entity("WorkSupply.Core.Models.WorkLog.WorkLog", b =>
@@ -244,7 +281,7 @@ namespace WorkSupply.Persistence.SQL.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<TimeSpan>("Duration");
+                    b.Property<long>("Duration");
 
                     b.Property<string>("EmployeeId");
 
@@ -312,6 +349,17 @@ namespace WorkSupply.Persistence.SQL.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WorkSupply.Core.Models.Employments.Employment", b =>
+                {
+                    b.HasOne("WorkSupply.Core.Models.AppUser.ApplicationUser", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("WorkSupply.Core.Models.AppUser.ApplicationUser", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId");
                 });
 
             modelBuilder.Entity("WorkSupply.Core.Models.WorkLog.WorkLog", b =>

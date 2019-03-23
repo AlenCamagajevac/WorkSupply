@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WorkSupply.Core.Exceptions;
+using WorkSupply.Core.Helper;
 using WorkSupply.Core.Models.AppUser;
 using WorkSupply.Core.Models.Settings;
 using WorkSupply.Core.Models.Token;
@@ -38,7 +40,7 @@ namespace WorkSupply.Services.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<bool> CreateUserAsync(ApplicationUser user, string password, Role role)
+        public async Task<bool> CreateUserAsync(ApplicationUser user, Role role)
         {
             // Find role
             var appRole = await _roleManager.FindByNameAsync(ApplicationRole.GetRoleName(role));
@@ -49,7 +51,9 @@ namespace WorkSupply.Services.Services
             }
          
             // Create user
-            var createResult = await _userManager.CreateAsync(user, password);
+            user.EmailConfirmed = false;
+            user.EmailConfirmationCode = StringGenerator.GetRandomString(16);
+            var createResult = await _userManager.CreateAsync(user, StringGenerator.GetRandomString(16));
             if (!createResult.Succeeded)
             {
                 Log.Information("Could not create user: {createResult.Errors.ToList()}", createResult.Errors.ToList());
@@ -59,6 +63,9 @@ namespace WorkSupply.Services.Services
             // Assign user to role
             var addToRoleResult = await _userManager.AddToRoleAsync(user, appRole.Name);
             return addToRoleResult.Succeeded;
+            
+            // TODO: send mail
+            // Send email to user with his email confirmation code
         }
 
         public async Task<Jwt> CreateJwtToken(string email, string password)
@@ -80,6 +87,30 @@ namespace WorkSupply.Services.Services
                 Expiration = jwtSecurityToken.ValidTo
             };
         }
+
+        public async Task<bool> ChangeUserPassword(string userId, string newPassword, string emailConfirmationCode)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new EntityNotFoundException("Could not find user!");
+            }
+            
+            // Check if email conformation code is correct
+            if (user.EmailConfirmationCode != emailConfirmationCode)
+            {
+                throw new PermissionDeniedException("Email confirmation code was wrong");
+            }
+
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded) return false;
+
+            user.EmailConfirmed = true;
+            await _userManager.UpdateAsync(user);
+            await _userManager.AddPasswordAsync(user, newPassword);
+            return true;
+
+        }
         
         private async Task<List<Claim>> ConstructUserClaimsAsync(string email, string password)
         {
@@ -92,6 +123,11 @@ namespace WorkSupply.Services.Services
             }
 
             var user = await _userManager.FindByEmailAsync(email);
+            if (!user.EmailConfirmed)
+            {
+                throw new PermissionDeniedException("Could not log in user, please confirm your mail!");
+            }
+            
             var userRoles = await _userManager.GetRolesAsync(user);
 
             //Create user claims

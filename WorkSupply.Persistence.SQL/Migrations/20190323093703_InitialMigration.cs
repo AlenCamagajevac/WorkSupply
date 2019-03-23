@@ -44,7 +44,8 @@ namespace WorkSupply.Persistence.SQL.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: true),
                     Address = table.Column<string>(maxLength: 50, nullable: true),
-                    City = table.Column<string>(maxLength: 350, nullable: true)
+                    City = table.Column<string>(maxLength: 350, nullable: true),
+                    EmailConfirmationCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,6 +159,38 @@ namespace WorkSupply.Persistence.SQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employments",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    EmployerId = table.Column<string>(nullable: true),
+                    EmployeeId = table.Column<string>(nullable: true),
+                    DateOfEmployment = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employments_AspNetUsers_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employments_AspNetUsers_EmployerId",
+                        column: x => x.EmployerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WorkLogs",
                 columns: table => new
                 {
@@ -169,7 +202,7 @@ namespace WorkSupply.Persistence.SQL.Migrations
                     Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     EmployerId = table.Column<string>(nullable: true),
                     EmployeeId = table.Column<string>(nullable: true),
-                    Duration = table.Column<TimeSpan>(nullable: false),
+                    Duration = table.Column<long>(nullable: false),
                     Status = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -194,15 +227,15 @@ namespace WorkSupply.Persistence.SQL.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0", "bb5a8955-6f2a-40b0-b5b6-5de1f0c62d6a", "Admin of WorkSupply app", "Admin", "ADMIN" },
-                    { "2", "b5a40180-78e0-4a9d-897f-0252c23dd534", null, "Employee", "EMPLOYEE" },
-                    { "1", "225dd59b-a3d9-41b9-9560-5234579672b1", null, "Employer", "EMPLOYER" }
+                    { "0", "69d6c4c8-42a4-42b4-9ed4-1eb15f360b55", "Admin of WorkSupply app", "Admin", "ADMIN" },
+                    { "2", "fe9269bf-a485-4a47-9b34-81a39ced54b6", null, "Employee", "EMPLOYEE" },
+                    { "1", "f4af7dce-213d-459e-a4b1-dac9e31416f8", null, "Employer", "EMPLOYER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Address", "City", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "0", 0, null, null, "af9668b7-2f25-4a7f-8732-d94756076d8c", "admin@worksupply.com", true, false, null, null, "ADMIN@WORKSUPPLY.COM", "ADMIN@WORKSUPPLY.COM", "AQAAAAEAACcQAAAAEAF+9pjRPF5phCK/wYW5LfxFE4gHcvkbKHlZ53Rvg/r4fQLJtLJ6LGE3WMkMgH+rkQ==", null, false, "", false, "admin@worksupply.com" });
+                columns: new[] { "Id", "AccessFailedCount", "Address", "City", "ConcurrencyStamp", "Email", "EmailConfirmationCode", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "0", 0, null, null, "adbcb37c-3863-40b2-bda5-240ae938fbed", "admin@worksupply.com", null, true, false, null, null, "ADMIN@WORKSUPPLY.COM", "ADMIN@WORKSUPPLY.COM", "AQAAAAEAACcQAAAAEEwl+mOZna0cFJaxQjcAwyJO5jbnOurUHhEwCvRNRIlQyP+lZHLsrx/WdpjpIw7Crg==", null, false, "", false, "admin@worksupply.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -247,6 +280,16 @@ namespace WorkSupply.Persistence.SQL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employments_EmployeeId",
+                table: "Employments",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employments_EmployerId",
+                table: "Employments",
+                column: "EmployerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkLogs_EmployeeId",
                 table: "WorkLogs",
                 column: "EmployeeId");
@@ -273,6 +316,9 @@ namespace WorkSupply.Persistence.SQL.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Employments");
 
             migrationBuilder.DropTable(
                 name: "WorkLogs");

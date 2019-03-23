@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using WorkSupply.Core.Exceptions;
 using WorkSupply.Core.Models.Pagination;
 using WorkSupply.Core.Models.WorkLog;
 using WorkSupply.Core.Query;
 using WorkSupply.Core.Repository;
 using WorkSupply.Persistence.SQL.Data;
+using WorkSupply.Persistence.SQL.QueryableExtensions;
 
 namespace WorkSupply.Persistence.SQL.Repository
 {
@@ -60,6 +62,25 @@ namespace WorkSupply.Persistence.SQL.Repository
             workLogs = workLogs.AsNoTracking();
 
             return PaginatedList<WorkLog>.Create(workLogs, filters.Page ?? 1, 20);
+        }
+
+        public async Task<List<WorkLogGraphData>> GetWorkLogGraphData(WorkLogGraphDataQuery filters, string userId)
+        {
+            var workLogs = _context.WorkLogs
+                .Where(wl => (wl.EmployeeId == userId || wl.EmployerId == userId))
+                .AsQueryable();
+            
+            // Filter by date
+            if (filters.StartDate.HasValue)
+                workLogs = workLogs.Where(wl => wl.CreatedDate > filters.StartDate);
+
+            if (filters.EndDate.HasValue)
+                workLogs = workLogs.Where(wl => wl.CreatedDate < filters.EndDate);
+
+            return await workLogs
+                .GroupWorkLogsByGranularity(filters.Granularity)
+                .AsNoTracking()
+                .ToListAsync();
         }
         
         public async Task AddWorkLog(WorkLog workLog)

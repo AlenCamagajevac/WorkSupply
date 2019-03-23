@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WorkSupply.Core.Models.Pagination;
 using WorkSupply.Core.Models.WorkLog;
@@ -39,5 +40,13 @@ namespace WorkSupply.Core.Service
         /// <param name="status">new status of a work log</param>
         /// <returns></returns>
         Task ResolveWorkLog(string employerId, string workLogId, WorkLogStatus status);
+
+        /// <summary>
+        /// Gets work log data to display on a chart (grouped by date and sum by total work hours)
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<WorkLogGraphData>> GetWorkLogGraphData(WorkLogGraphDataQuery filters, string userId);
     }
 }

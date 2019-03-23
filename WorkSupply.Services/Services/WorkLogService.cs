@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WorkSupply.Core.Exceptions;
@@ -76,9 +77,12 @@ namespace WorkSupply.Services.Services
 
         public async Task<PaginatedList<WorkLog>> GetWorkLogs(WorkLogQuery filters, string userId)
         {
-            var workLogs = await _unitOfWork.WorkLogs.GetWorkLogs(filters, userId);
+            return await _unitOfWork.WorkLogs.GetWorkLogs(filters, userId);
+        }
 
-            return workLogs;
+        public async Task<List<WorkLogGraphData>> GetWorkLogGraphData(WorkLogGraphDataQuery filters, string userId)
+        {
+            return await _unitOfWork.WorkLogs.GetWorkLogGraphData(filters, userId);
         }
     }
 }

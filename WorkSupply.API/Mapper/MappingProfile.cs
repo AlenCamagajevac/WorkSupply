@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using WorkSupply.Core.DTOs.Auth;
 using WorkSupply.Core.DTOs.Pagination;
@@ -18,6 +19,9 @@ namespace WorkSupply.API.Mapper
             CreateMap<PaginatedList<WorkLog>, PaginatedListDto<WorkLogDto>>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.ToList()));
             
+            CreateMap<PaginatedList<ApplicationUser>, PaginatedListDto<ApplicationUserDto>>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.ToList()));
+            
             // Auth
             CreateMap<RegisterDto, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
@@ -25,9 +29,16 @@ namespace WorkSupply.API.Mapper
             CreateMap<Jwt, JwtTokenDto>();
             
             // Work log
-            CreateMap<CreateWorkLogDto, WorkLog>();
+            CreateMap<CreateWorkLogDto, WorkLog>()
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration.Value.Ticks));
             CreateMap<WorkLog, WorkLogDto>()
-                .ForMember(dest => dest.ResolvedDate, opt => opt.MapFrom(src => src.ModifiedDate));
+                .ForMember(dest => dest.ResolvedDate, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => new TimeSpan(src.Duration)));
+            CreateMap<WorkLogGraphData, WorkLogGraphDataDto>()
+                .ForMember(dest => dest.TotalHours, opt => opt.MapFrom(src => new TimeSpan(src.TotalHours)))
+                .ForMember(dest => dest.TotalPending, opt => opt.MapFrom(src => new TimeSpan(src.TotalPending)))
+                .ForMember(dest => dest.TotalApproved, opt => opt.MapFrom(src => new TimeSpan(src.TotalApproved)))
+                .ForMember(dest => dest.TotalRejected, opt => opt.MapFrom(src => new TimeSpan(src.TotalRejected)));
         }
     }
 }

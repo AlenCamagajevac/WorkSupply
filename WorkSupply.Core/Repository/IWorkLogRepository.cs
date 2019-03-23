@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WorkSupply.Core.Models.Pagination;
 using WorkSupply.Core.Models.WorkLog;
@@ -22,6 +23,14 @@ namespace WorkSupply.Core.Repository
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<PaginatedList<WorkLog>> GetWorkLogs(WorkLogQuery filters, string userId);
+
+        /// <summary>
+        /// Gets WorkLog data for graph display (grouped by date and summed by total work)
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<WorkLogGraphData>> GetWorkLogGraphData(WorkLogGraphDataQuery filters, string userId);
         
         /// <summary>
         /// Persists new work log
