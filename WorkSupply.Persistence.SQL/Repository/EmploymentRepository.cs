@@ -36,7 +36,6 @@ namespace WorkSupply.Persistence.SQL.Repository
                 {
                     EmployeeId = employeeId,
                     EmployerId = employerId,
-                    DateOfEmployment = DateTime.Now,
                     IsActive = true
                 });
                 
@@ -62,28 +61,6 @@ namespace WorkSupply.Persistence.SQL.Repository
 
             // deactivate employment
             employment.IsActive = false;
-        }
-
-        public async Task<PaginatedList<ApplicationUser>> GetEmployeesForUser(string employerId, int page)
-        {
-            var employees = _context.Employments
-                .Where(e => e.EmployerId == employerId)
-                .Select(e => e.Employee)
-                .AsNoTracking()
-                .AsQueryable();
-
-            return PaginatedList<ApplicationUser>.Create(employees, page, 20);
-        }
-
-        public async Task<PaginatedList<ApplicationUser>> GetEmployersForUser(string employeeId, int page)
-        {
-            var employees = _context.Employments
-                .Where(e => e.EmployeeId == employeeId)
-                .Select(e => e.Employer)
-                .AsNoTracking()
-                .AsQueryable();
-
-            return PaginatedList<ApplicationUser>.Create(employees, page, 20);
         }
     }
 }

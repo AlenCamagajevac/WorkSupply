@@ -12,10 +12,13 @@ namespace WorkSupply.Persistence.SQL
         
         public IWorkLogRepository WorkLogs { get; private set; }
 
+        public IEmploymentRepository Employments { get; private set; }
+
         public UnitOfWork(WorkSupplyContext context)
         {
             _context = context;
             WorkLogs = new WorkLogRepository(context);
+            Employments = new EmploymentRepository(context);
         }
 
         public async Task<int> CompleteAsync()

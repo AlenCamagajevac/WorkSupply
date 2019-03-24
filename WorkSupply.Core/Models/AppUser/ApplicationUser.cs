@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using ProtoBuf.ServiceModel;
+using WorkSupply.Core.Models.Employments;
 
 namespace WorkSupply.Core.Models.AppUser
 {

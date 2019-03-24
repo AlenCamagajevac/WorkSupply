@@ -41,7 +41,7 @@ namespace WorkSupply.Services.Services
                     where EF.Functions.Like(u.Name, $"%{usersQuery.Name}%") 
                     select u;
             }
-
+            
             return PaginatedList<ApplicationUser>.Create(users, usersQuery.Page ?? 1, 20);
         }
 

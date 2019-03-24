@@ -6,7 +6,6 @@ namespace WorkSupply.Core.Models.Employments
 {
     public class Employment : Entity<string>
     {
-
         public string EmployerId { get; set; }
         
         public ApplicationUser Employer { get; set; }
@@ -14,8 +13,6 @@ namespace WorkSupply.Core.Models.Employments
         public string EmployeeId { get; set; }
         
         public ApplicationUser Employee { get; set; }
-
-        public DateTime DateOfEmployment { get; set; }
 
         public bool IsActive { get; set; }
     }

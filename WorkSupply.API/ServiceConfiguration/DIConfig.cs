@@ -15,6 +15,7 @@ namespace WorkSupply.API.ServiceConfiguration
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IWorkLogService, WorkLogService>();
+            services.AddTransient<IEmploymentService, EmploymentService>();
             
             return services;
         }

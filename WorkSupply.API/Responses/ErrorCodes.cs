@@ -7,8 +7,10 @@
         CouldNotGetUser = 12,
         CouldNotActivateUserAccount = 13,
         
-        CouldNotCreateWorkLog = 21,
-        CouldNotResolveWorkLog = 22,
-        CouldNotGetWorkLog = 23
+        CouldNotCreateWorkLog = 20,
+        CouldNotResolveWorkLog = 21,
+        CouldNotGetWorkLog = 22,
+        
+        CouldNotChangeEmploymentStatus = 30
     }
 }

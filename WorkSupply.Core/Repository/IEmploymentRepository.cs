@@ -21,21 +21,5 @@ namespace WorkSupply.Core.Repository
         /// <param name="employerId"></param>
         /// <returns></returns>
         Task BreakEmployment(string employeeId, string employerId);
-
-        /// <summary>
-        /// Gets all employees for certain employer
-        /// </summary>
-        /// <param name="employerId"></param>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        Task<PaginatedList<ApplicationUser>> GetEmployeesForUser(string employerId, int page);
-
-        /// <summary>
-        /// Gets all employers for certain employee
-        /// </summary>
-        /// <param name="employeeId"></param>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        Task<PaginatedList<ApplicationUser>> GetEmployersForUser(string employeeId, int page);
     }
 }
