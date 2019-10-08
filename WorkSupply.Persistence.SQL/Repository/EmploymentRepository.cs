@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -62,5 +63,29 @@ namespace WorkSupply.Persistence.SQL.Repository
             // deactivate employment
             employment.IsActive = false;
         }
+
+        public async Task<bool> EmploymentExists(string employerId, string employeeId)
+        {
+            return await _context.Employments
+                .AnyAsync(e => e.EmployeeId == employeeId && e.EmployerId == employerId && e.IsActive);
+        }
+        
+        public async Task<List<ApplicationUser>> GetEmployeesForUser(string employerId) 
+        { 
+            return await _context.Employments 
+                .Where(e => e.EmployerId == employerId) 
+                .Select(e => e.Employee) 
+                .AsNoTracking() 
+                .ToListAsync(); 
+        } 
+ 
+        public async Task<List<ApplicationUser>> GetEmployersForUser(string employeeId) 
+        { 
+            return await _context.Employments 
+                .Where(e => e.EmployeeId == employeeId) 
+                .Select(e => e.Employer) 
+                .AsNoTracking() 
+                .ToListAsync(); 
+        } 
     }
 }

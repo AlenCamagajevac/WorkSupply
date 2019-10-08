@@ -26,20 +26,12 @@ namespace WorkSupply.Services.Services
 
         public async Task SaveWorkLog(WorkLog workLog)
         {
-            // Check if employee exists
-            var employee = await _userManager.FindByIdAsync(workLog.EmployeeId);
-            if (employee == null)
+            // Check if employment exists between two users
+            if (!await _unitOfWork.Employments.EmploymentExists(workLog.EmployerId, workLog.EmployeeId))
             {
-                Log.Warning("Trying to save work log for non existing employee: id-{workLog.EmployeeId}", workLog.EmployeeId);
-                throw new EntityNotFoundException("Could not find Employee!");
-            }
-
-            // Check if employer exists
-            var employer = await _userManager.FindByIdAsync(workLog.EmployerId);
-            if (employer == null)
-            {
-                Log.Warning("Trying to save work log for non existing employer: id-{workLog.EmployerId}", workLog.EmployerId);
-                throw new EntityNotFoundException("Could not find Employer!");
+                Log.Warning("Trying to log work for users that have no employment relationship." +
+                            " employer:{}, employee:{}", workLog.EmployerId, workLog.EmployeeId);
+                throw new EntityNotFoundException("Could not find employment info with those two users");
             }
 
             await _unitOfWork.WorkLogs.AddWorkLog(workLog);

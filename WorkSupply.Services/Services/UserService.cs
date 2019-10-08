@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkSupply.Core.Exceptions;
 using WorkSupply.Core.Models.AppUser;
 using WorkSupply.Core.Models.Pagination;
+using WorkSupply.Core.Persistence;
 using WorkSupply.Core.Query;
 using WorkSupply.Core.Service;
 
@@ -16,9 +18,11 @@ namespace WorkSupply.Services.Services
         private static readonly Serilog.ILogger Log = Serilog.Log.ForContext<UserService>();
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
         
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
 
@@ -52,6 +56,16 @@ namespace WorkSupply.Services.Services
             
             Log.Warning("Trying to get non existing user with id: {userId}", userId);
             throw new EntityNotFoundException($"Could not find user with id: {userId}");
+        }
+
+        public async Task<List<ApplicationUser>> GetEmployers(string userId)
+        {
+            return await _unitOfWork.Employments.GetEmployersForUser(userId);
+        }
+
+        public async Task<List<ApplicationUser>> GetEmployees(string userId)
+        {
+            return await _unitOfWork.Employments.GetEmployeesForUser(userId);
         }
     }
 }

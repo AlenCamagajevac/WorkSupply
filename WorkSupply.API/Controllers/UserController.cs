@@ -77,5 +77,7 @@ namespace WorkSupply.API.Controllers
                 });
             }
         }
+        
+        // TODO: write controllers for getting user employers and employees
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using WorkSupply.Core.Models.Employments;
 
@@ -17,5 +18,8 @@ namespace WorkSupply.Core.Models.AppUser
         public string City { get; set; }
 
         public string EmailConfirmationCode { get; set; }
+
+        [NotMapped]
+        public ICollection<Employment> Employments { get; set; }
     }
 }

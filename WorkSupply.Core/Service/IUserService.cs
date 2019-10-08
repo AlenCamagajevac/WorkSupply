@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WorkSupply.Core.Models.AppUser;
 using WorkSupply.Core.Models.Pagination;
@@ -20,5 +21,19 @@ namespace WorkSupply.Core.Service
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<ApplicationUser> GetUserAsync(string userId);
+
+        /// <summary>
+        /// Gets a list of employers for a given user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<ApplicationUser>> GetEmployers(string userId);
+
+        /// <summary>
+        /// Gets a list of employees for a given user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<List<ApplicationUser>> GetEmployees(string userId);
     }
 }
